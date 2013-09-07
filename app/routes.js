@@ -1,16 +1,10 @@
-var passport      = require('passport');
+var passport      = require('passport'),
+    mongoose      = require('mongoose'),
+    User          = mongoose.model('User');
 
 module.exports = function(app, config) {
-  // Setup CORS
-  app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', config.clientUrl);
-    res.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    next();
-  });
-
   app.options('*', function(req, res){
-    res.send(200); 
+    res.send(200);
   });
 
   // Setup API blockade
@@ -23,12 +17,25 @@ module.exports = function(app, config) {
   });
 
   // Auth
-  app.post('/api/login', function(req, res, next) {
+  app.post('/login', function(req, res, next) {
     // Implement login
+    // check to see if username and password match a username and password in our DB
+    //if so, redirect to '/'
+    // else redirect to '/login' w/ error message
   });
 
-  app.post('/api/signup', function(req, res, next) {
+  app.post('/signup', function(req, res, next) {
     // Implement signup
+    // make function to add req.body info to db
+    // 
+    var user = new User(req.body);
+    console.log(user, req.body);
+    user.save(function(err){
+      if(err){
+        console.log(err);
+      }
+    });
+    res.send(200);
   });
 
   app.get('/api/news', function(req, res, next) {
@@ -38,4 +45,4 @@ module.exports = function(app, config) {
   app.get('/api/rate', function(req, res, next) {
     // Implement news rating
   });
-}
+};
